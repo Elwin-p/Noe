@@ -11,13 +11,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _controller = TextEditingController();
-  String _displayText = '';
-  String _timestamp = '';
+  // String _displayText = '';
+  // String _timestamp = '';
+  List<Map<String, String>> messages = [];
 
   void _updateText(String value) {
     setState(() {
-      _displayText = value;
-      _timestamp = DateFormat('yyyy-MM-dd     kk:mm').format(DateTime.now());
+      messages.add({
+        'text': value,
+        'timestamp': DateFormat('yyyy-MM-dd     kk:mm').format(DateTime.now()),
+      });
       _controller.clear(); //
     });
   }
@@ -55,35 +58,39 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(height: 20),
-            _displayText.trim().isNotEmpty
-                ? Container(
-                  alignment: Alignment.bottomLeft,
-                  width: double.infinity,
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    border: Border.all(color: Colors.tealAccent),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        _timestamp,
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        _displayText,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontStyle: FontStyle.italic,
+            Expanded(
+              child: ListView.builder(
+                itemCount: messages.length,
+                itemBuilder: (context, index) {
+                  final msg = messages[index];
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 12),
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(color: Colors.tealAccent),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          msg['timestamp'] ?? '',
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
                         ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                )
-                : SizedBox.shrink(),
+                        SizedBox(height: 8),
+                        Text(
+                          msg['text'] ?? '',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
