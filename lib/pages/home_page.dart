@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
 
   void _updateText(String value) {
     setState(() {
-      messages.add({
+      messages.insert(0, {
         'text': value,
         'timestamp': DateFormat('yyyy-MM-dd     kk:mm').format(DateTime.now()),
       });
@@ -60,34 +60,41 @@ class _HomePageState extends State<HomePage> {
             SizedBox(height: 20),
             Expanded(
               child: ListView.builder(
+                reverse: false,
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
                   final msg = messages[index];
-                  return Container(
-                    margin: EdgeInsets.only(bottom: 12),
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: Colors.tealAccent),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          msg['timestamp'] ?? '',
-                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                  return (msg['text'] ?? '').trim().isNotEmpty
+                      ? Container(
+                        margin: EdgeInsets.only(bottom: 12),
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(color: Colors.tealAccent),
                         ),
-                        SizedBox(height: 8),
-                        Text(
-                          msg['text'] ?? '',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontStyle: FontStyle.italic,
-                          ),
+
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              msg['timestamp'] ?? '',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              msg['text'] ?? '',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  );
+                      )
+                      : SizedBox.shrink();
                 },
               ),
             ),
