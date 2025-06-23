@@ -11,9 +11,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _controller = TextEditingController();
-  // String _displayText = '';
-  // String _timestamp = '';
+
   List<Map<String, String>> messages = [];
+  Set<int> expandedIndexes = {};
 
   void _updateText(String value) {
     setState(() {
@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
               focusNode: _focusNode,
               controller: _controller,
               decoration: InputDecoration(
-                hintText: 'type what u wanna do..',
+                hintText: 'type your reminders..',
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.transparent),
                 ),
@@ -66,30 +66,114 @@ class _HomePageState extends State<HomePage> {
                   final msg = messages[index];
                   return (msg['text'] ?? '').trim().isNotEmpty
                       ? Container(
-                        margin: EdgeInsets.only(bottom: 12),
-                        padding: EdgeInsets.all(10),
+                        margin: EdgeInsets.only(bottom: 12), // Reduced from 12
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ), // Reduced vertical padding
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                           border: Border.all(color: Colors.tealAccent),
                         ),
-
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              msg['timestamp'] ?? '',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey,
-                              ),
+                            Row(
+                              mainAxisSize:
+                                  MainAxisSize.min, // Minimize row height
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  msg['timestamp'] ?? '',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey,
+                                    height: 1.0, // Tight line height
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                if ((msg['text'] ?? '').length > 60)
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          if (expandedIndexes.contains(index)) {
+                                            expandedIndexes.remove(index);
+                                          } else {
+                                            expandedIndexes.add(index);
+                                          }
+                                        });
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(2),
+                                        child: Icon(
+                                          expandedIndexes.contains(index)
+                                              ? Icons.expand_less
+                                              : Icons.expand_more,
+                                          size: 16,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                Spacer(),
+                                Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder:
+                                            (context) => SimpleDialog(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              children: [
+                                                SimpleDialogOption(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                    print("Edit clicked");
+                                                  },
+                                                  child: Text('Edit'),
+                                                ),
+                                                SimpleDialogOption(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                    print("Delete clicked");
+                                                  },
+                                                  child: Text('Delete'),
+                                                ),
+                                              ],
+                                            ),
+                                      );
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.all(2),
+                                      child: Icon(
+                                        Icons.more_horiz,
+                                        size: 16,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(height: 8),
+                            SizedBox(height: 5), // Reduced from 5
                             Text(
                               msg['text'] ?? '',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontStyle: FontStyle.italic,
                               ),
+                              maxLines:
+                                  expandedIndexes.contains(index) ? null : 2,
+                              overflow:
+                                  expandedIndexes.contains(index)
+                                      ? TextOverflow.visible
+                                      : TextOverflow.ellipsis,
                             ),
                           ],
                         ),
