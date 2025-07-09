@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:noe/database/reminder_message.dart';
 import 'package:noe/database/reminder_service.dart';
+import 'package:noe/noti/noti_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -100,6 +101,12 @@ class _HomePageState extends State<HomePage> {
         title: Text("Noe"),
         centerTitle: true,
         actions: [IconButton(icon: Icon(Icons.add), onPressed: _showKeyboard)],
+        leading: IconButton(
+          icon: Icon(Icons.schedule),
+          onPressed: () async {
+            await NotiService().showMidnightCountdownNotification();
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

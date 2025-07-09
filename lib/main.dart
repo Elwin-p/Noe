@@ -11,18 +11,22 @@ void main() async {
   tz.initializeTimeZones();
   tz.setLocalLocation(tz.getLocation('Asia/Kolkata'));
 
+  // Initialize ReminderService
   await ReminderService.init();
+
+  // Initialize notifications
+  final notiService = NotiService();
+  await notiService.initNotification();
+  if (notiService.isInitialized) {
+    await notiService.scheduleHourlyNotifications();
+  } else {
+    print('Notification initialization failed');
+  }
 
   runApp(const MyApp());
 
-  WidgetsBinding.instance.addPostFrameCallback((_) async {
-    final notiService = NotiService();
-    await notiService.initNotification();
-    await notiService.scheduleHourlyNotifications();
-  });
-
   final runAppDone = DateTime.now();
-  print("runApp() returned: $runAppDone");
+  print("runApp() returned at: $runAppDone");
 
   WidgetsBinding.instance.addPostFrameCallback((_) {
     print("First frame rendered at: ${DateTime.now()}");
