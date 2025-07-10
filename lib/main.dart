@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:noe/noti/noti_service.dart';
 import 'package:noe/pages/home_page.dart';
 import 'package:noe/database/reminder_service.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -15,13 +14,13 @@ void main() async {
   await ReminderService.init();
 
   // Initialize notifications
-  final notiService = NotiService();
-  await notiService.initNotification();
-  if (notiService.isInitialized) {
-    await notiService.scheduleHourlyNotifications();
-  } else {
-    print('Notification initialization failed');
-  }
+  // final notiService = NotiService();
+  // await notiService.initNotification();
+  // if (notiService.isInitialized) {
+  //   await notiService.showMidnightCountdownNotification();
+  // } else {
+  //   print('Notification initialization failed');
+  // }
 
   runApp(const MyApp());
 

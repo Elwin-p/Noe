@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/timezone.dart' as tz;
-import 'package:workmanager/workmanager.dart';
+// import 'package:timezone/timezone.dart' as tz;
+// import 'package:workmanager/workmanager.dart';
 
 class NotiService {
   static final NotiService _instance = NotiService._internal();
@@ -102,126 +102,126 @@ class NotiService {
     );
   }
 
-  Future<void> scheduleHourlyNotifications() async {
-    await notificationsPlugin.cancelAll();
-    print('Cancelled all notifications at: ${DateTime.now()}');
+  // Future<void> scheduleHourlyNotifications() async {
+  //   await notificationsPlugin.cancelAll();
+  //   print('Cancelled all notifications at: ${DateTime.now()}');
 
-    // Immediate notification
-    print('Showing immediate test notification');
-    try {
-      await notificationsPlugin.show(
-        998,
-        'Immediate Test',
-        'This appeared immediately!',
-        notificationDetails(),
-        payload: 'immediate_test',
-      );
-      print('Immediate test notification triggered');
-    } catch (e) {
-      print('Error showing immediate notification: $e');
-    }
+  //   // Immediate notification
+  //   print('Showing immediate test notification');
+  //   try {
+  //     await notificationsPlugin.show(
+  //       998,
+  //       'Immediate Test',
+  //       'This appeared immediately!',
+  //       notificationDetails(),
+  //       payload: 'immediate_test',
+  //     );
+  //     print('Immediate test notification triggered');
+  //   } catch (e) {
+  //     print('Error showing immediate notification: $e');
+  //   }
 
-    // periodicallyShow test (every 5 minutes)
-    print('Preparing periodicallyShow test');
-    try {
-      await notificationsPlugin.periodicallyShow(
-        999,
-        '5-Minute Test',
-        'This is a repeating test every 5 minutes!',
-        RepeatInterval.everyMinute, // 5-minute interval for testing
-        notificationDetails(),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        payload: 'periodic_test',
-      );
-      print('periodicallyShow test scheduled successfully');
-    } catch (e) {
-      print('Error scheduling periodicallyShow test: $e');
-    }
+  //   // periodicallyShow test (every 5 minutes)
+  //   print('Preparing periodicallyShow test');
+  //   try {
+  //     await notificationsPlugin.periodicallyShow(
+  //       999,
+  //       '5-Minute Test',
+  //       'This is a repeating test every 5 minutes!',
+  //       RepeatInterval.everyMinute, // 5-minute interval for testing
+  //       notificationDetails(),
+  //       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+  //       payload: 'periodic_test',
+  //     );
+  //     print('periodicallyShow test scheduled successfully');
+  //   } catch (e) {
+  //     print('Error scheduling periodicallyShow test: $e');
+  //   }
 
-    // Workmanager for hourly notifications
-    print('Setting up workmanager for hourly notifications');
-    try {
-      await Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
-      await Workmanager().registerPeriodicTask(
-        'hourly_notification_task',
-        'hourly_notification',
-        frequency: const Duration(hours: 1),
-        initialDelay: _calculateInitialDelay(),
-        constraints: Constraints(
-          networkType: NetworkType.notRequired,
-          requiresBatteryNotLow: false,
-          requiresCharging: false,
-          requiresDeviceIdle: false,
-          requiresStorageNotLow: false,
-        ),
-      );
-      print('Workmanager task scheduled successfully');
-    } catch (e) {
-      print('Error scheduling workmanager task: $e');
-    }
-  }
+  //   // Workmanager for hourly notifications
+  //   print('Setting up workmanager for hourly notifications');
+  //   try {
+  //     await Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
+  //     await Workmanager().registerPeriodicTask(
+  //       'hourly_notification_task',
+  //       'hourly_notification',
+  //       frequency: const Duration(hours: 1),
+  //       initialDelay: _calculateInitialDelay(),
+  //       constraints: Constraints(
+  //         networkType: NetworkType.notRequired,
+  //         requiresBatteryNotLow: false,
+  //         requiresCharging: false,
+  //         requiresDeviceIdle: false,
+  //         requiresStorageNotLow: false,
+  //       ),
+  //     );
+  //     print('Workmanager task scheduled successfully');
+  //   } catch (e) {
+  //     print('Error scheduling workmanager task: $e');
+  //   }
+  // }
 
-  Duration _calculateInitialDelay() {
-    final now = tz.TZDateTime.now(tz.local);
-    final nextHour = tz.TZDateTime(
-      tz.local,
-      now.year,
-      now.month,
-      now.day,
-      now.hour + 1,
-    );
-    return nextHour.difference(now);
-  }
+  // Duration _calculateInitialDelay() {
+  //   final now = tz.TZDateTime.now(tz.local);
+  //   final nextHour = tz.TZDateTime(
+  //     tz.local,
+  //     now.year,
+  //     now.month,
+  //     now.day,
+  //     now.hour + 1,
+  //   );
+  //   return nextHour.difference(now);
+  // }
 }
 
-String _formatHourLabel(int hour) {
-  final h = hour > 12 ? hour - 12 : hour;
-  final suffix = hour >= 12 ? 'PM' : 'AM';
-  return '$h $suffix';
-}
+// String _formatHourLabel(int hour) {
+//   final h = hour > 12 ? hour - 12 : hour;
+//   final suffix = hour >= 12 ? 'PM' : 'AM';
+//   return '$h $suffix';
+// }
 
-@pragma('vm:entry-point')
-void callbackDispatcher() {
-  Workmanager().executeTask((task, inputData) async {
-    final notificationsPlugin = FlutterLocalNotificationsPlugin();
-    final now = tz.TZDateTime.now(tz.local);
-    final hour = now.hour;
-    print('Workmanager task triggered at: $now');
+// @pragma('vm:entry-point')
+// void callbackDispatcher() {
+//   Workmanager().executeTask((task, inputData) async {
+//     final notificationsPlugin = FlutterLocalNotificationsPlugin();
+//     final now = tz.TZDateTime.now(tz.local);
+//     final hour = now.hour;
+//     print('Workmanager task triggered at: $now');
 
-    if (hour >= 6 && hour <= 23) {
-      try {
-        await notificationsPlugin.initialize(
-          const InitializationSettings(
-            android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-            iOS: DarwinInitializationSettings(),
-          ),
-        );
-        await notificationsPlugin.show(
-          hour,
-          '20 years',
-          "It's ${_formatHourLabel(hour)} - stay focused!",
-          const NotificationDetails(
-            android: AndroidNotificationDetails(
-              'daily_channel_id',
-              'Daily Notification',
-              channelDescription: 'Daily Notification Channel',
-              importance: Importance.max,
-              priority: Priority.high,
-              showWhen: true,
-              enableVibration: true,
-              playSound: true,
-            ),
-          ),
-          payload: 'hourly_$hour',
-        );
-        print('Workmanager notification for hour $hour triggered');
-      } catch (e) {
-        print('Error in workmanager notification for hour $hour: $e');
-      }
-    }
-    return Future.value(true);
-  });
-}
+//     if (hour >= 6 && hour <= 23) {
+//       try {
+//         await notificationsPlugin.initialize(
+//           const InitializationSettings(
+//             android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+//             iOS: DarwinInitializationSettings(),
+//           ),
+//         );
+//         await notificationsPlugin.show(
+//           hour,
+//           '20 years',
+//           "It's ${_formatHourLabel(hour)} - stay focused!",
+//           const NotificationDetails(
+//             android: AndroidNotificationDetails(
+//               'daily_channel_id',
+//               'Daily Notification',
+//               channelDescription: 'Daily Notification Channel',
+//               importance: Importance.max,
+//               priority: Priority.high,
+//               showWhen: true,
+//               enableVibration: true,
+//               playSound: true,
+//             ),
+//           ),
+//           payload: 'hourly_$hour',
+//         );
+//         print('Workmanager notification for hour $hour triggered');
+//       } catch (e) {
+//         print('Error in workmanager notification for hour $hour: $e');
+//       }
+//     }
+//     return Future.value(true);
+//   });
+// }
 
 // import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // import 'package:timezone/timezone.dart' as tz;
