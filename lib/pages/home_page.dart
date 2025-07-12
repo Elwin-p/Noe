@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:noe/database/reminder_message.dart';
 import 'package:noe/database/reminder_service.dart';
@@ -50,19 +51,47 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: Text('Edit Reminder'),
+            backgroundColor: Colors.white,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: const Text(
+              'Edit Reminder',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
             content: TextField(
               controller: editController,
               maxLines: null,
+              style: const TextStyle(fontSize: 16),
               decoration: InputDecoration(
                 hintText: 'Edit your reminder...',
-                border: OutlineInputBorder(),
+                hintStyle: TextStyle(color: Colors.grey[500]),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey[300]!),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Colors.black87, width: 2),
+                ),
+                contentPadding: const EdgeInsets.all(16),
               ),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('Cancel'),
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
               TextButton(
                 onPressed: () async {
@@ -75,7 +104,13 @@ class _HomePageState extends State<HomePage> {
                   }
                   Navigator.pop(context);
                 },
-                child: Text('Save'),
+                child: const Text(
+                  'Save',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
             ],
           ),
@@ -97,228 +132,374 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text("Noe"),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+        ),
+        title: const Text(
+          "Noe",
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w300,
+            color: Colors.black87,
+            letterSpacing: 1.5,
+          ),
+        ),
         centerTitle: true,
-        actions: [IconButton(icon: Icon(Icons.add), onPressed: _showKeyboard)],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add_rounded, size: 28),
+            onPressed: _showKeyboard,
+            color: Colors.black87,
+          ),
+        ],
         leading: IconButton(
-          icon: Icon(Icons.schedule),
+          icon: const Icon(Icons.schedule_rounded, size: 28),
           onPressed: () async {
             await NotiService().showMidnightCountdownNotification();
           },
+          color: Colors.black87,
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              onSubmitted: _updateText,
-              focusNode: _focusNode,
-              controller: _controller,
-              decoration: InputDecoration(
-                hintText: 'type your reminders..',
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.transparent),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          child: Column(
+            children: [
+              // Input Field
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  // border: Border.all(color: Colors.transparent, width: 2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: .05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.teal),
+                child: Focus(
+                  onFocusChange: (hasFocus) {
+                    setState(() {
+                      // Update container border when focus changes
+                    });
+                  },
+                  child: Builder(
+                    builder: (context) {
+                      final hasFocus = Focus.of(context).hasFocus;
+                      return AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color:
+                                hasFocus ? Colors.black87 : Colors.transparent,
+                            width: 2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: .05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 4,
+                        ),
+                        child: TextField(
+                          onSubmitted: _updateText,
+                          focusNode: _focusNode,
+                          controller: _controller,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black87,
+                          ),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            hintText: 'What\'s on your mind?',
+                            hintStyle: TextStyle(
+                              color: Colors.grey[500],
+                              fontSize: 16,
+                            ),
+                            border: const OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(16),
+                              ), // or use StadiumBorder in container
+                              borderSide: BorderSide.none,
+                            ),
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 16,
+                            ),
+                            hoverColor: Colors.transparent,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: ListView.builder(
-                reverse: false,
-                itemCount: reminders.length,
-                itemBuilder: (context, index) {
-                  final reminder = reminders[index];
-                  final timestampStr = DateFormat(
-                    'yyyy-MM-dd     kk:mm',
-                  ).format(reminder.timestamp);
+              const SizedBox(height: 24),
 
-                  return reminder.text.trim().isNotEmpty
-                      ? GestureDetector(
-                        onTap: () async {
-                          final key = reminder.key;
-                          final boxReminder = ReminderService.box.get(key);
-                          if (boxReminder != null) {
-                            boxReminder.isCompleted = !boxReminder.isCompleted;
-                            await boxReminder.save();
-                            _loadReminders();
-                          }
-                        },
-                        child: Container(
-                          margin: EdgeInsets.only(bottom: 12),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(
-                              color:
-                                  reminder.isCompleted
-                                      ? Colors.grey.withValues(alpha: .5)
-                                      : Colors.tealAccent,
-                            ),
-                            color:
-                                reminder.isCompleted
-                                    ? Colors.grey.withValues(alpha: .1)
-                                    : null,
-                          ),
+              // Reminders List
+              Expanded(
+                child:
+                    reminders.isEmpty
+                        ? Center(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  // GestureDetector(
-                                  //   onTap: () async {
-                                  //     final key = reminder.key;
-                                  //     final boxReminder = ReminderService.box
-                                  //         .get(key);
-                                  //     if (boxReminder != null) {
-                                  //       boxReminder.isCompleted =
-                                  //           !boxReminder.isCompleted;
-                                  //       await boxReminder.save();
-                                  //       _loadReminders();
-                                  //     }
-                                  //   },
-
-                                  //   child: Container(
-                                  //     width: 16,
-                                  //     height: 16,
-                                  //     decoration: BoxDecoration(
-                                  //       border: Border.all(color: Colors.teal),
-                                  //       borderRadius: BorderRadius.circular(3),
-                                  //       color:
-                                  //           reminder.isCompleted
-                                  //               ? Colors.teal
-                                  //               : Colors.transparent,
-                                  //     ),
-                                  //     child:
-                                  //         reminder.isCompleted
-                                  //             ? Icon(
-                                  //               Icons.check,
-                                  //               size: 12,
-                                  //               color: Colors.white,
-                                  //             )
-                                  //             : null,
-                                  //   ),
-                                  // ),
-                                  // SizedBox(width: 8),
-                                  Text(
-                                    timestampStr,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey,
-                                      height: 1.0,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  if (reminder.text.length > 60)
-                                    Material(
-                                      color: Colors.transparent,
-                                      child: InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            if (expandedIndexes.contains(
-                                              index,
-                                            )) {
-                                              expandedIndexes.remove(index);
-                                            } else {
-                                              expandedIndexes.add(index);
-                                            }
-                                          });
-                                        },
-                                        customBorder: const CircleBorder(),
-                                        child: Container(
-                                          padding: EdgeInsets.all(2),
-                                          child: Icon(
-                                            expandedIndexes.contains(index)
-                                                ? Icons.expand_less
-                                                : Icons.expand_more,
-                                            size: 20,
-                                            color: Colors.grey[600],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  Spacer(),
-                                  Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      onTap: () {
-                                        showDialog(
-                                          context: context,
-                                          builder:
-                                              (context) => SimpleDialog(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                children: [
-                                                  SimpleDialogOption(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                      _editReminder(index);
-                                                    },
-                                                    child: Text('Edit'),
-                                                  ),
-                                                  SimpleDialogOption(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                      _deleteReminder(index);
-                                                    },
-                                                    child: Text('Delete'),
-                                                  ),
-                                                ],
-                                              ),
-                                        );
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.all(2),
-                                        child: Icon(
-                                          Icons.more_horiz,
-                                          size: 20,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              Icon(
+                                Icons.lightbulb_outline_rounded,
+                                size: 64,
+                                color: Colors.grey[400],
                               ),
-                              SizedBox(height: 5),
+                              const SizedBox(height: 16),
                               Text(
-                                reminder.text,
+                                'No reminders yet',
                                 style: TextStyle(
                                   fontSize: 18,
-                                  fontStyle: FontStyle.italic,
-                                  decoration:
-                                      reminder.isCompleted
-                                          ? TextDecoration.lineThrough
-                                          : TextDecoration.none,
-                                  color:
-                                      reminder.isCompleted ? Colors.grey : null,
+                                  color: Colors.grey[600],
+                                  fontWeight: FontWeight.w300,
                                 ),
-                                maxLines:
-                                    expandedIndexes.contains(index) ? null : 2,
-                                overflow:
-                                    expandedIndexes.contains(index)
-                                        ? TextOverflow.visible
-                                        : TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Tap the + button to add your first reminder',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey[500],
+                                ),
                               ),
                             ],
                           ),
+                        )
+                        : ListView.builder(
+                          itemCount: reminders.length,
+                          itemBuilder: (context, index) {
+                            final reminder = reminders[index];
+                            final timestampStr = DateFormat(
+                              'MMM dd, yyyy • HH:mm',
+                            ).format(reminder.timestamp);
+
+                            return reminder.text.trim().isNotEmpty
+                                ? GestureDetector(
+                                  onTap: () async {
+                                    final key = reminder.key;
+                                    final boxReminder = ReminderService.box.get(
+                                      key,
+                                    );
+                                    if (boxReminder != null) {
+                                      boxReminder.isCompleted =
+                                          !boxReminder.isCompleted;
+                                      await boxReminder.save();
+                                      _loadReminders();
+                                    }
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.only(bottom: 12),
+                                    padding: const EdgeInsets.all(20),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(16),
+                                      border: Border.all(
+                                        color:
+                                            reminder.isCompleted
+                                                ? Colors.grey.withOpacity(0.3)
+                                                : Colors.transparent,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.05),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              timestampStr,
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey[600],
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                            const Spacer(),
+                                            if (reminder.text.length > 60)
+                                              GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    if (expandedIndexes
+                                                        .contains(index)) {
+                                                      expandedIndexes.remove(
+                                                        index,
+                                                      );
+                                                    } else {
+                                                      expandedIndexes.add(
+                                                        index,
+                                                      );
+                                                    }
+                                                  });
+                                                },
+                                                child: Container(
+                                                  padding: const EdgeInsets.all(
+                                                    4,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.grey[100],
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          8,
+                                                        ),
+                                                  ),
+                                                  child: Icon(
+                                                    expandedIndexes.contains(
+                                                          index,
+                                                        )
+                                                        ? Icons
+                                                            .expand_less_rounded
+                                                        : Icons
+                                                            .expand_more_rounded,
+                                                    size: 20,
+                                                    color: Colors.grey[600],
+                                                  ),
+                                                ),
+                                              ),
+                                            const SizedBox(width: 8),
+                                            GestureDetector(
+                                              onTap: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (context) => SimpleDialog(
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                        elevation: 0,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                16,
+                                                              ),
+                                                        ),
+                                                        children: [
+                                                          SimpleDialogOption(
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                context,
+                                                              );
+                                                              _editReminder(
+                                                                index,
+                                                              );
+                                                            },
+                                                            child: const Text(
+                                                              'Edit',
+                                                              style: TextStyle(
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color:
+                                                                    Colors
+                                                                        .black87,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SimpleDialogOption(
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                context,
+                                                              );
+                                                              _deleteReminder(
+                                                                index,
+                                                              );
+                                                            },
+                                                            child: const Text(
+                                                              'Delete',
+                                                              style: TextStyle(
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color:
+                                                                    Colors.red,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                );
+                                              },
+                                              child: Container(
+                                                padding: const EdgeInsets.all(
+                                                  4,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey[100],
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                child: Icon(
+                                                  Icons.more_horiz_rounded,
+                                                  size: 20,
+                                                  color: Colors.grey[600],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 12),
+                                        Text(
+                                          reminder.text,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                            color:
+                                                reminder.isCompleted
+                                                    ? Colors.grey[500]
+                                                    : Colors.black87,
+                                            decoration:
+                                                reminder.isCompleted
+                                                    ? TextDecoration.lineThrough
+                                                    : TextDecoration.none,
+                                            height: 1.4,
+                                          ),
+                                          maxLines:
+                                              expandedIndexes.contains(index)
+                                                  ? null
+                                                  : 3,
+                                          overflow:
+                                              expandedIndexes.contains(index)
+                                                  ? TextOverflow.visible
+                                                  : TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                                : const SizedBox.shrink();
+                          },
                         ),
-                      )
-                      : SizedBox.shrink();
-                },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
