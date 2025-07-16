@@ -73,6 +73,7 @@ class NotiService {
         channelShowBadge: true,
         enableLights: true,
         ticker: 'Daily Notification',
+        icon: 'ic_stat_ic_notification',
       ),
       iOS: DarwinNotificationDetails(
         presentAlert: true,

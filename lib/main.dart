@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:noe/pages/home_page.dart';
-import 'package:noe/database/reminder_service.dart';
+import 'package:Noe/pages/home_page.dart';
+import 'package:Noe/database/reminder_service.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 

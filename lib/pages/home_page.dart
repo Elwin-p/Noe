@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:noe/database/reminder_message.dart';
-import 'package:noe/database/reminder_service.dart';
-import 'package:noe/noti/noti_service.dart';
+import 'package:Noe/database/reminder_message.dart';
+import 'package:Noe/database/reminder_service.dart';
+import 'package:Noe/noti/noti_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
