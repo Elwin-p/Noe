@@ -18,6 +18,8 @@ class _HomePageState extends State<HomePage> {
 
   List<ReminderMessage> reminders = [];
   Set<int> expandedIndexes = {};
+  bool notificationEnabled = true;
+  bool isDarkMode = false;
 
   @override
   void initState() {
@@ -157,13 +159,165 @@ class _HomePageState extends State<HomePage> {
             onPressed: _showKeyboard,
             color: Colors.black87,
           ),
+          IconButton(
+            icon: const Icon(Icons.schedule_rounded, size: 28),
+            onPressed: () async {
+              await NotiService().showMidnightCountdownNotification();
+            },
+            color: Colors.black87,
+          ),
         ],
-        leading: IconButton(
-          icon: const Icon(Icons.schedule_rounded, size: 28),
-          onPressed: () async {
-            await NotiService().showMidnightCountdownNotification();
-          },
-          color: Colors.black87,
+
+        // leading: IconButton(
+        //   icon: const Icon(Icons.schedule_rounded, size: 28),
+        //   onPressed: () async {
+        //     await NotiService().showMidnightCountdownNotification();
+        //   },
+        //   color: Colors.black87,
+        // ),
+      ),
+      drawer: Drawer(
+        backgroundColor: Colors.grey[50],
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Today's Date
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    DateFormat('EEEE, MMMM dd').format(DateTime.now()),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w300,
+                      color: Colors.black87,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                // Settings Container
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      // Notification Toggle
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.notifications_outlined,
+                            size: 24,
+                            color: Colors.grey[600],
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Text(
+                              'Notifications',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                          Switch(
+                            value:
+                                notificationEnabled, // Replace with your state variable
+                            onChanged: (value) {
+                              setState(() {
+                                notificationEnabled = value;
+                              });
+                            },
+                            activeColor: Colors.black87,
+                            inactiveThumbColor: Colors.grey[400],
+                            inactiveTrackColor: Colors.grey[200],
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // Dark Mode Toggle
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.dark_mode_outlined,
+                            size: 24,
+                            color: Colors.grey[600],
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Text(
+                              'Dark Mode',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                          Switch(
+                            value:
+                                isDarkMode, // Replace with your state variable
+                            onChanged: (value) {
+                              setState(() {
+                                isDarkMode = value;
+                              });
+                            },
+                            activeColor: Colors.black87,
+                            inactiveThumbColor: Colors.grey[400],
+                            inactiveTrackColor: Colors.grey[200],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                const Spacer(),
+
+                // App Version (Optional)
+                Center(
+                  child: Text(
+                    'Noe v1.0.0',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[500],
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
       body: SafeArea(
